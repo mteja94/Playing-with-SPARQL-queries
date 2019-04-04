@@ -1,0 +1,20 @@
+# Construct a graph with 10 instances of missing dbo:parent relations and 10 instances of missing child relations
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX yago: <http://dbpedia.org/class/yago/>
+PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+CONSTRUCT {?p1 dbo:child ?c1.
+			?c2 dbo:parent ?p2} 
+WHERE {
+ {SELECT ?p1 ?c1 WHERE {
+  ?p1 dbo:child ?c1.
+  FILTER NOT EXISTS{?c1 dbo:parent ?p1}
+  } LIMIT 10}
+ {SELECT ?c2 ?p2 WHERE {
+   ?c2 dbo:parent ?p2.
+   FILTER NOT EXISTS{?p2 dbo:child ?c2} 
+   } LIMIT 10}
+}
